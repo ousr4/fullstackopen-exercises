@@ -1,17 +1,31 @@
+import personService from '../services/person'
+
 const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber}) => {
     const addPerson = (e) => {
         e.preventDefault()
         const personObj = {
             name: newName,
             number: newNumber,
-            id: persons.length + 1
         }
-        if (persons.some(person => person.name === newName)) {
-            alert(`${newName} is already added to phonebook`)
+        const person = persons.find(person => person.name === newName)
+        if (person) {
+            if (confirm(`${person.name} is already added to phonebook, repalce the old number with a new one?`)) {
+                personService
+                    .update(person.id, personObj)
+                    .then(returnedObj => {
+                        setPersons(persons.map(p => p.id !== person.id ? p : returnedObj))
+                        setNewName('')
+                        setNewNumber('')
+                    })
+            }
         } else {
-            setPersons(persons.concat(personObj))
-            setNewName('')
-            setNewNumber('')
+            personService
+                .create(personObj)
+                .then(returnedObj => {
+                    setPersons(persons.concat(returnedObj))
+                    setNewName('')
+                    setNewNumber('')
+                })
         }
     }
     return (
