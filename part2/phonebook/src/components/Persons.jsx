@@ -7,7 +7,7 @@ const Person = ({person, removePerson}) => {
     )
 }
 
-const Persons = ({persons, setPersons}) => {
+const Persons = ({persons, setPersons, setMessage}) => {
     const removePerson = (id) => {
         const person = persons.find(p => p.id === id)
         if(confirm(`Delete ${person.name}`)) {
@@ -15,6 +15,12 @@ const Persons = ({persons, setPersons}) => {
                 .remove(id)
                 .then(() => {
                     setPersons(persons.filter(p => p.id !== id))
+                })
+                .catch(error => {
+                    setMessage({text: `Information of ${person.name} has already been removed from server`, type: 'error'})
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 2000)
                 })
         }
     }

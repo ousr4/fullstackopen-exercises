@@ -1,6 +1,6 @@
 import personService from '../services/person'
 
-const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber}) => {
+const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber, setMessage}) => {
     const addPerson = (e) => {
         e.preventDefault()
         const personObj = {
@@ -16,6 +16,10 @@ const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNew
                         setPersons(persons.map(p => p.id !== person.id ? p : returnedObj))
                         setNewName('')
                         setNewNumber('')
+                        setMessage({text: `Updated ${person.name}'s number`, type: 'info'})
+                        setTimeout(() => {
+                            setMessage(null)
+                        }, 2000)
                     })
             }
         } else {
@@ -25,11 +29,15 @@ const PersonForm = ({persons, setPersons, newName, setNewName, newNumber, setNew
                     setPersons(persons.concat(returnedObj))
                     setNewName('')
                     setNewNumber('')
+                    setMessage({text: `Added ${returnedObj.name}`, type: 'info'})
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 2000)
                 })
         }
     }
     return (
-        <form onSubmit={addPerson}>
+        <form onSubmit={addPerson} className='personForm'>
             <div>
                 name: <input value={newName} onChange={ e => setNewName(e.target.value)} />
             </div>
